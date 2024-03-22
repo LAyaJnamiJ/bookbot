@@ -61,10 +61,10 @@ def main():
 
     final_title = variation_to_title_map.get(final_match.lower(), final_match)
 
-    title_matching(final_title, final_score) # Proceed with the best match
+    text = title_matching(final_title, final_score) # Proceed with the best match
     
-    print(f"The total number of words in this book is {len(word_count(final_title))}.")
-    print(letter_count(final_title))
+    print(f"The total number of words in this book is {len(word_count(text))}.")
+    print(letter_count(text))
 
 def title_matching(best_match, score):
     # matches raw input to the best match gotten from find_best_match with a score > 80
@@ -73,7 +73,8 @@ def title_matching(best_match, score):
         if match == "y":
             try:
                 path = f"books/{best_match}.txt"
-                book_open(path)
+                print(book_open(path))
+                return book_open(path)
             except FileNotFoundError as e:
                 print("Such book does not exist or the title has been misspelt.")
         elif match == "n":
@@ -147,8 +148,8 @@ def normalize_input(input_str):
 def book_open(path):
     # opens the file and prints the contents
     with open(path) as f:
-        file_contents = f.read()
-        print(file_contents)
+        return f.read()
+        
 
 def get_available_books(directory="books"):
     # gets all the book titles by replacing their .txt extension with an empty string
@@ -159,16 +160,13 @@ def find_best_match(book_name, book_list):
     best_match = process.extractOne(book_name, book_list)
     return best_match
 
-def word_count(book_title):
-    path = f"books/{book_title}.txt"
-    with open(path, "r") as f:
-        string = str(f.read())
-        words = string.split()
-        return words
+def word_count(string):
+    words = string.split()
+    return words
 
-def letter_count(book_title):
+def letter_count(string):
     letter_dict = {}
-    words = ''.join(word_count(book_title))
+    words = ''.join(word_count(string))
     words_lower = words.lower()
     for i in range(len(words_lower)):
         if letter_dict.get(words_lower[i], 0) == 0:
