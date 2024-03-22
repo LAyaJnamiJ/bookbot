@@ -24,13 +24,12 @@ def main():
     book_list = get_available_books()
     book_list_copy = book_list.copy()
     metadata = json_calling(book_entry())
-    print(metadata)
 
     variation_to_title_map = {}  # Our magical mapping!
 
     for book in metadata:
-        original_title = book["title"].lower()
-        variations = [v.lower() for v in book.get("title_variations", [])]
+        original_title = book.title.lower()
+        variations = [v.lower() for v in book.title_variations]
         for variation in variations:
             variation_to_title_map[variation] = original_title 
         book_list.extend(variations)
@@ -92,22 +91,30 @@ def book_entry():
         raw_title_variations = title_variations_input.split(',')
         title_variations = [entry.strip() for entry in raw_title_variations if entry.strip()]
         
-        books = [Book(title, author, publisher, publishing_date, title_variations)]
+        new_book = [Book(title, author, publisher, publishing_date, title_variations)]
 
     elif ask == "n":
-        books = []
+        new_book = []
 
-    return books        
+    return new_book        
 
-def json_calling(books):
-    # Serialisation
-    with open("metadata.json", "w") as f:
-        json.dump([book.to_dict() for book in books], f, indent=4)
-    # Deserialisation
-    with open("metadata.json", "r") as f:
-        books_data = json.load(f)
+def json_calling(new_books):
+    filename = "metadata.json"
+    # Attempt to open and read existing data
+    try:
+        with open(filename, "r") as f:
+            existing_books = json.load(f)
+    except FileNotFoundError:
+        existing_books = []
+    # Combine the existing books with the new ones
+    combined_books = existing_books + [book.to_dict() for book in new_books]
+    
+    # Now, inscribe the combined tales into the scroll
+    with open(filename, "w") as f:
+        json.dump(combined_books, f, indent=4)
+    
     # Transforming the JSON back into Book instances
-    loaded_books = [Book(**data) for data in books_data]
+    loaded_books = [Book(**data) for data in combined_books]
     return loaded_books
 
 def book_list_return(book_list_copy):

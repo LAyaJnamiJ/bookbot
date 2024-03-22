@@ -1,1 +1,43 @@
-[]
+[
+    {
+        "title": "Frankenstein",
+        "author": [
+            "Mary"
+        ],
+        "publisher": "Project Gutenberg",
+        "publishing_date": "2008",
+        "title_variations": [
+            "Frank",
+            "The Modern Prosmethus"
+        ]
+    },
+    {
+        "title": "test",
+        "author": [
+            "test author",
+            "test author 2"
+        ],
+        "publisher": "test",
+        "publishing_date": "today",
+        "title_variations": [
+            "test",
+            "untitled",
+            "testtest"
+        ]
+    },
+    {
+        "title": "addendum",
+        "author": [
+            "add",
+            "add",
+            "minus"
+        ],
+        "publisher": "addition",
+        "publishing_date": "x += 1",
+        "title_variations": [
+            "added",
+            "a",
+            "adddddd"
+        ]
+    }
+]
