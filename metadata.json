@@ -39,5 +39,40 @@
             "a",
             "adddddd"
         ]
+    },
+    {
+        "title": "testtt",
+        "author": [
+            "ttt",
+            "ttt"
+        ],
+        "publisher": "then",
+        "publishing_date": "now",
+        "title_variations": [
+            "yes",
+            "no"
+        ]
+    },
+    {
+        "title": "nnn",
+        "author": [
+            "tes"
+        ],
+        "publisher": "yea",
+        "publishing_date": "nnn",
+        "title_variations": [
+            "w"
+        ]
+    },
+    {
+        "title": "aaa",
+        "author": [
+            "a"
+        ],
+        "publisher": "a",
+        "publishing_date": "a",
+        "title_variations": [
+            "aa"
+        ]
     }
 ]

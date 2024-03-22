@@ -113,6 +113,13 @@ def json_calling(new_books):
     with open(filename, "w") as f:
         json.dump(combined_books, f, indent=4)
     
+    # For each new book, create a corresponding .txt file in `books/`
+    for book in new_books:
+        book_title_safe = book.title.replace(" ", "_").lower() + ".txt"  # A simple spell to convert titles to filenames
+        book_path = os.path.join("books", book_title_safe)
+        with open(book_path, "w") as f:
+            f.write(" ")
+
     # Transforming the JSON back into Book instances
     loaded_books = [Book(**data) for data in combined_books]
     return loaded_books
