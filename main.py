@@ -61,10 +61,11 @@ def main():
 
     final_title = variation_to_title_map.get(final_match.lower(), final_match)
 
-    text = title_matching(final_title, final_score) # Proceed with the best match
-    
+    text, path = title_matching(final_title, final_score) # Proceed with the best match
+    print(f"--- Begin report of {path} ---")
     print(f"The total number of words in this book is {len(word_count(text))}.")
-    print(letter_count(text))
+    sort_letter_count(letter_count(text))
+    print("--- End report ---")
 
 def title_matching(best_match, score):
     # matches raw input to the best match gotten from find_best_match with a score > 80
@@ -74,7 +75,7 @@ def title_matching(best_match, score):
             try:
                 path = f"books/{best_match}.txt"
                 print(book_open(path))
-                return book_open(path)
+                return book_open(path), path
             except FileNotFoundError as e:
                 print("Such book does not exist or the title has been misspelt.")
         elif match == "n":
@@ -174,5 +175,19 @@ def letter_count(string):
         else:
             letter_dict[words_lower[i]] += 1
     return letter_dict
+
+def sort_on(dict):
+    return dict["num"]
+
+def sort_letter_count(dict):
+    for_sort = []
+    for char in dict:
+        for_sort.append({"char": char, "num": dict[char]})
+    for_sort.sort(reverse=True, key=sort_on)
+    for char_count in for_sort:
+        if not char_count["char"].isalpha():
+            continue
+        print(f"The '{char_count["char"]}' character was found {char_count["num"]} times")
+
 
 main()
