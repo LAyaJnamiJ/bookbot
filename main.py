@@ -63,6 +63,9 @@ def main():
 
     title_matching(final_title, final_score) # Proceed with the best match
     
+    print(f"The total number of words in this book is {len(word_count(final_title))}.")
+    print(letter_count(final_title))
+
 def title_matching(best_match, score):
     # matches raw input to the best match gotten from find_best_match with a score > 80
     if score > 80:
@@ -144,8 +147,8 @@ def normalize_input(input_str):
 def book_open(path):
     # opens the file and prints the contents
     with open(path) as f:
-            file_contents = f.read()
-            print(file_contents)
+        file_contents = f.read()
+        print(file_contents)
 
 def get_available_books(directory="books"):
     # gets all the book titles by replacing their .txt extension with an empty string
@@ -155,5 +158,23 @@ def find_best_match(book_name, book_list):
     # uses a method from fuzzywuzzy's process to compute the edit distance and returns the match with highest score
     best_match = process.extractOne(book_name, book_list)
     return best_match
+
+def word_count(book_title):
+    path = f"books/{book_title}.txt"
+    with open(path, "r") as f:
+        string = str(f.read())
+        words = string.split()
+        return words
+
+def letter_count(book_title):
+    letter_dict = {}
+    words = ''.join(word_count(book_title))
+    words_lower = words.lower()
+    for i in range(len(words_lower)):
+        if letter_dict.get(words_lower[i], 0) == 0:
+            letter_dict[words_lower[i]] = 1
+        else:
+            letter_dict[words_lower[i]] += 1
+    return letter_dict
 
 main()
