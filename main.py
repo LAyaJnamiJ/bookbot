@@ -3,12 +3,28 @@ import string
 import json
 from fuzzywuzzy import process
 
+class Book:
+    def __init__(self, title, author, publisher, publishing_date, title_variations):
+        self.title = title
+        self.author = author
+        self.publisher = publisher
+        self.publishing_date = publishing_date
+        self.title_variations = title_variations
+
+    def to_dict(self):
+        return {
+            "title": self.title,
+            "author": self.author,
+            "publisher": self.publisher,
+            "publishing_date": self.publishing_date,
+            "title_variations": self.title_variations
+        }
+
 def main():
-    user_input = input("Which book dost thou seek?\n")
-    book_name = normalize_input(user_input)
     book_list = get_available_books()
     book_list_copy = book_list.copy()
-    metadata = get_book_metadata()
+    metadata = json_calling(book_entry())
+    print(metadata)
 
     variation_to_title_map = {}  # Our magical mapping!
 
@@ -20,6 +36,9 @@ def main():
         book_list.extend(variations)
 
     book_list_return(book_list_copy)
+
+    user_input = input("Which book dost thou seek?\n")
+    book_name = normalize_input(user_input)
 
     # first check with original normalized input
     best_match, score = find_best_match(book_name, book_list)
@@ -60,16 +79,43 @@ def title_matching(best_match, score):
     else:
         print("Please search again with a different title.")
 
+def book_entry():
+    ask = input("Do you want to enter a new book into the library? (y/n)\n").lower().strip()
+    if ask =="y":
+        title = input("Please enter the book title. ").strip()
+        author_input = input("Please enter the author's name(s). Separate individual authors by commas. ")
+        raw_author = author_input.split(',')
+        author = [entry.strip() for entry in raw_author if entry.strip()]
+        publisher = input("Please enter the publisher's name. ").strip()
+        publishing_date = input("Please enter the publishing date. ").strip()
+        title_variations_input = input("Are there any alternate titles for this book? Please enter them in order separated by commas. ")
+        raw_title_variations = title_variations_input.split(',')
+        title_variations = [entry.strip() for entry in raw_title_variations if entry.strip()]
+        
+        books = [Book(title, author, publisher, publishing_date, title_variations)]
+
+    elif ask == "n":
+        books = []
+
+    return books        
+
+def json_calling(books):
+    # Serialisation
+    with open("metadata.json", "w") as f:
+        json.dump([book.to_dict() for book in books], f, indent=4)
+    # Deserialisation
+    with open("metadata.json", "r") as f:
+        books_data = json.load(f)
+    # Transforming the JSON back into Book instances
+    loaded_books = [Book(**data) for data in books_data]
+    return loaded_books
+
 def book_list_return(book_list_copy):
+    # asks if the user needs the entire book list
     ask = input("Do you need the entire book list? (y/n)\n").lower().strip()
     if ask == "y":
         for title in book_list_copy:
             print(title)
-
-def get_book_metadata():
-    # fetches metadata from json file
-    with open('metadata.json') as f:
-        return json.load(f)
 
 def normalize_input(input_str):
     # Remove punctuation
